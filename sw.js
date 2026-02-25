@@ -1,4 +1,4 @@
-const CACHE = "cyber-arena-v2";
+const CACHE = "cyber-arena-v9";
 const ASSETS = [
   "./",
   "./index.html",
