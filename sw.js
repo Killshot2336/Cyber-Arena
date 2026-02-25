@@ -2,7 +2,7 @@ const CACHE = "cyber-arena-v2";
 const ASSETS = [
   "./",
   "./index.html",
-  "./styles.css",
+  "./style.css",
   "./app.js",
   "./manifest.json",
   "./question-bank.json"
