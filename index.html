@@ -1,1 +1,413 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#0b0f1a" />
+  <title>Cyber Arena</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app" class="app">
+    <!-- Top Bar -->
+    <header class="topbar">
+      <div class="brand">
+        <div class="brandMark"></div>
+        <div class="brandText">
+          <div class="brandTitle">CYBER ARENA</div>
+          <div class="brandSub">Private Operator Build</div>
+        </div>
+      </div>
 
+      <div class="topActions">
+        <button class="ghost" id="btnTheme">Theme</button>
+        <button class="ghost" id="btnModeToggle">Dark Pro</button>
+        <button class="ghost" id="btnReset">Reset</button>
+      </div>
+    </header>
+
+    <!-- Cold Open Overlay -->
+    <section id="coldOpen" class="overlay hidden">
+      <div class="overlayCard">
+        <div class="overlayTitle">COLD OPEN</div>
+        <div class="overlaySub">Answer immediately. No warm-up.</div>
+        <div class="qCard">
+          <div class="qMeta">
+            <span id="coldTag" class="tag">HARD</span>
+            <span id="coldTimer" class="timerPill">—</span>
+          </div>
+          <div id="coldQuestion" class="qText">Loading…</div>
+          <div id="coldChoices" class="choices"></div>
+        </div>
+        <div class="row">
+          <button id="btnColdSkip" class="ghost">Skip</button>
+          <button id="btnColdContinue" class="primary" disabled>Continue</button>
+        </div>
+        <div id="coldFeedback" class="micro"></div>
+      </div>
+    </section>
+
+    <!-- Main -->
+    <main class="main">
+      <!-- Home -->
+      <section id="screenHome" class="screen">
+        <div class="hero">
+          <div class="heroTitle">Train speed. Build dominance.</div>
+          <div class="heroText">
+            Solo grind, 3-person war room, and quizbowl simulation.
+            Scores and profiles stay on your device.
+          </div>
+        </div>
+
+        <div class="panelGrid">
+          <button class="panel" data-nav="solo">
+            <div class="panelTitle">SOLO</div>
+            <div class="panelSub">Operator Trials</div>
+            <div class="panelHint">Adaptive + vault + ranks</div>
+          </button>
+          <button class="panel" data-nav="team">
+            <div class="panelTitle">TEAM</div>
+            <div class="panelSub">War Room</div>
+            <div class="panelHint">Silent vote + debate + sync</div>
+          </button>
+          <button class="panel" data-nav="quizbowl">
+            <div class="panelTitle">QUIZBOWL</div>
+            <div class="panelSub">Round Simulator</div>
+            <div class="panelHint">Real pacing + post analytics</div>
+          </button>
+        </div>
+
+        <div class="card">
+          <div class="cardTitle">Local Profiles</div>
+          <div class="row wrap">
+            <div class="field">
+              <label>Username (saved on this device)</label>
+              <input id="username" type="text" placeholder="Enter name…" maxlength="24"/>
+            </div>
+            <div class="field">
+              <label>Accent</label>
+              <select id="accent">
+                <option value="cyan">Neon Cyan</option>
+                <option value="purple">Purple Pulse</option>
+                <option value="green">Neon Green</option>
+                <option value="red">Red Strike</option>
+                <option value="gold">Gold</option>
+                <option value="soft">Soft Pastel</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Intensity</label>
+              <select id="intensity">
+                <option value="minimal">Minimal</option>
+                <option value="cinematic" selected>Cinematic</option>
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <button id="btnSaveProfile" class="primary">Save</button>
+            <button id="btnViewStats" class="ghost">View Stats</button>
+          </div>
+          <div id="homeStatus" class="micro"></div>
+        </div>
+
+        <div class="card">
+          <div class="cardTitle">Question Bank</div>
+          <div class="micro" id="bankStatus">Loading bank…</div>
+        </div>
+      </section>
+
+      <!-- Solo Config -->
+      <section id="screenSolo" class="screen hidden">
+        <div class="screenHeader">
+          <button class="ghost" data-back>← Back</button>
+          <div>
+            <div class="screenTitle">SOLO — Operator Trials</div>
+            <div class="micro">Beat your best score on this device.</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="row wrap">
+            <div class="field">
+              <label>Run Length</label>
+              <select id="soloLen">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50" selected>50</option>
+                <option value="100">100</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Timer</label>
+              <select id="soloTimer">
+                <option value="3">3s</option>
+                <option value="5" selected>5s</option>
+                <option value="8">8s</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Feedback</label>
+              <select id="soloFeedback">
+                <option value="batched" selected>Batched (anti-cheese)</option>
+                <option value="instant">Instant</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Modes</label>
+              <select id="soloMods">
+                <option value="standard" selected>Standard</option>
+                <option value="blind">Blind (choices delayed)</option>
+                <option value="survival">Survival (1 life)</option>
+                <option value="hardcore">Hardcore (2s pressure)</option>
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <button id="btnStartSolo" class="primary">Start Solo Run</button>
+            <button id="btnSoloVault" class="ghost">Run Vault</button>
+          </div>
+          <div class="micro" id="soloHint"></div>
+        </div>
+
+        <div id="soloHUD" class="hud hidden">
+          <div class="hudRow">
+            <div class="pill">Score: <span id="soloScore">0</span></div>
+            <div class="pill">Acc: <span id="soloAcc">0%</span></div>
+            <div class="pill">Streak: <span id="soloStreak">0</span></div>
+            <div class="pill">Q: <span id="soloIdx">0</span>/<span id="soloTotal">0</span></div>
+            <div class="pill">Avg RT: <span id="soloRT">—</span></div>
+            <div class="pill danger">Time: <span id="soloTime">—</span></div>
+          </div>
+        </div>
+
+        <div id="soloCard" class="qCard hidden">
+          <div class="qMeta">
+            <span id="soloTag" class="tag">—</span>
+            <span id="soloConfidenceTag" class="tag ghostTag">CONFIDENCE: <b id="soloConfLabel">MED</b></span>
+          </div>
+          <div id="soloQuestion" class="qText"></div>
+          <div id="soloChoices" class="choices"></div>
+
+          <div class="row wrap">
+            <div class="field grow">
+              <label>Confidence (affects scoring)</label>
+              <input id="soloConf" type="range" min="1" max="3" value="2" />
+              <div class="micro">Low = safer, High = bonus if right / penalty if wrong</div>
+            </div>
+            <button id="btnSoloSkip" class="ghost">Skip</button>
+            <button id="btnSoloEnd" class="danger">End</button>
+          </div>
+
+          <div id="soloFeedbackBox" class="micro"></div>
+        </div>
+
+        <div id="soloResults" class="card hidden"></div>
+      </section>
+
+      <!-- Team -->
+      <section id="screenTeam" class="screen hidden">
+        <div class="screenHeader">
+          <button class="ghost" data-back>← Back</button>
+          <div>
+            <div class="screenTitle">TEAM — War Room</div>
+            <div class="micro">3-person silent vote + debate + sync score.</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="row wrap">
+            <div class="field">
+              <label>Players (local)</label>
+              <input id="tP1" placeholder="Player 1" maxlength="24" />
+              <input id="tP2" placeholder="Player 2" maxlength="24" />
+              <input id="tP3" placeholder="Player 3" maxlength="24" />
+              <div class="micro">Names are saved on this device only.</div>
+            </div>
+
+            <div class="field">
+              <label>Run Length</label>
+              <select id="teamLen">
+                <option value="10">10</option>
+                <option value="25" selected>25</option>
+                <option value="50">50</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Vote Window</label>
+              <select id="teamVoteTime">
+                <option value="5">5s</option>
+                <option value="7" selected>7s</option>
+                <option value="10">10s</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Debate Window (if split)</label>
+              <select id="teamDebateTime">
+                <option value="8">8s</option>
+                <option value="10" selected>10s</option>
+                <option value="15">15s</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row">
+            <button id="btnStartTeam" class="primary">Start Team Run</button>
+            <button id="btnTeamReset" class="ghost">Reset Team Stats</button>
+          </div>
+          <div class="micro" id="teamHint"></div>
+        </div>
+
+        <div id="teamHUD" class="hud hidden">
+          <div class="hudRow">
+            <div class="pill">Team Score: <span id="teamScore">0</span></div>
+            <div class="pill">Sync: <span id="teamSync">0</span></div>
+            <div class="pill">Q: <span id="teamIdx">0</span>/<span id="teamTotal">0</span></div>
+            <div class="pill danger">Time: <span id="teamTime">—</span></div>
+            <div class="pill">Unanimous+: <span id="teamUni">0</span></div>
+            <div class="pill">Groupthink-: <span id="teamGt">0</span></div>
+          </div>
+        </div>
+
+        <div id="teamCard" class="qCard hidden">
+          <div class="qMeta">
+            <span id="teamPhase" class="tag">VOTE</span>
+            <span id="teamPhaseTimer" class="timerPill">—</span>
+          </div>
+          <div id="teamQuestion" class="qText"></div>
+          <div id="teamChoices" class="choices"></div>
+
+          <div class="row wrap">
+            <button id="btnTeamVote1" class="ghost">Vote: P1</button>
+            <button id="btnTeamVote2" class="ghost">Vote: P2</button>
+            <button id="btnTeamVote3" class="ghost">Vote: P3</button>
+            <button id="btnTeamLock" class="primary" disabled>Lock Answer</button>
+            <button id="btnTeamEnd" class="danger">End</button>
+          </div>
+
+          <div class="micro" id="teamFeedback"></div>
+        </div>
+
+        <div id="teamResults" class="card hidden"></div>
+      </section>
+
+      <!-- Quizbowl -->
+      <section id="screenQuizbowl" class="screen hidden">
+        <div class="screenHeader">
+          <button class="ghost" data-back>← Back</button>
+          <div>
+            <div class="screenTitle">QUIZBOWL — Round Simulator</div>
+            <div class="micro">No hints. No mid-round review. Post-round analytics only.</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="row wrap">
+            <div class="field">
+              <label>Round Structure</label>
+              <select id="qbStruct">
+                <option value="20-20-10" selected>20 + 20 + Boss 10</option>
+                <option value="30-0-10">30 + Boss 10</option>
+                <option value="40-0-0">40 straight</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Per-Question Timer</label>
+              <select id="qbTimer">
+                <option value="5">5s</option>
+                <option value="7" selected>7s</option>
+                <option value="10">10s</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Exam Lock</label>
+              <select id="qbLock">
+                <option value="on" selected>On (recommended)</option>
+                <option value="off">Off</option>
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <button id="btnStartQB" class="primary">Start Quizbowl Sim</button>
+          </div>
+          <div class="micro" id="qbHint"></div>
+        </div>
+
+        <div id="qbHUD" class="hud hidden">
+          <div class="hudRow">
+            <div class="pill">Score: <span id="qbScore">0</span></div>
+            <div class="pill">Round: <span id="qbRound">1</span></div>
+            <div class="pill">Q: <span id="qbIdx">0</span>/<span id="qbTotal">0</span></div>
+            <div class="pill danger">Time: <span id="qbTime">—</span></div>
+          </div>
+        </div>
+
+        <div id="qbCard" class="qCard hidden">
+          <div class="qMeta">
+            <span id="qbTag" class="tag">—</span>
+            <span id="qbTimerPill" class="timerPill">—</span>
+          </div>
+          <div id="qbQuestion" class="qText"></div>
+          <div id="qbChoices" class="choices"></div>
+          <div class="row">
+            <button id="btnQBEnd" class="danger">End</button>
+          </div>
+        </div>
+
+        <div id="qbResults" class="card hidden"></div>
+      </section>
+
+      <!-- Stats Modal -->
+      <section id="screenStats" class="overlay hidden">
+        <div class="overlayCard wide">
+          <div class="row between">
+            <div>
+              <div class="overlayTitle">Operator Debrief</div>
+              <div class="overlaySub">This device only.</div>
+            </div>
+            <button id="btnCloseStats" class="ghost">Close</button>
+          </div>
+          <div id="statsBody" class="statsGrid"></div>
+        </div>
+      </section>
+
+      <!-- Theme Modal -->
+      <section id="screenTheme" class="overlay hidden">
+        <div class="overlayCard">
+          <div class="row between">
+            <div>
+              <div class="overlayTitle">Theme</div>
+              <div class="overlaySub">Dark Pro default. Clean mode optional.</div>
+            </div>
+            <button id="btnCloseTheme" class="ghost">Close</button>
+          </div>
+
+          <div class="card flat">
+            <div class="row wrap">
+              <button class="chip" data-accent="cyan">Cyan</button>
+              <button class="chip" data-accent="purple">Purple</button>
+              <button class="chip" data-accent="green">Green</button>
+              <button class="chip" data-accent="red">Red</button>
+              <button class="chip" data-accent="gold">Gold</button>
+              <button class="chip" data-accent="soft">Soft</button>
+            </div>
+            <div class="row">
+              <button id="btnToggleIntensity" class="ghost">Toggle Intensity</button>
+              <button id="btnToggleClean" class="ghost">Toggle Clean</button>
+            </div>
+            <div class="micro" id="themeNote"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="micro">Wylie East • Cyber Arena • Local Training Build</div>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
